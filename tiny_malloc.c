@@ -41,7 +41,6 @@ struct block_meta* request_space(struct block_meta* last, size_t size) {
 }
 
 void *malloc(size_t size) {
-    printf("in tiny malloc\n");
     struct block_meta* block;
     if (size <= 0) {
         return NULL;
@@ -82,13 +81,15 @@ void free(void* ptr) {
 }
 
 void* realloc(void* ptr, size_t size) {
-    if (ptr == (void*)-1) {
+    if (ptr == (void*)-1 || !ptr) {
         return malloc(size);
     }
+    // printf("%p\n", ptr);
     struct block_meta* prev_block = get_block_ptr(ptr);
     if (prev_block == (void*) -1) {
         return NULL;
     }
+    // printf("%p\n", prev_block);
     // not thread safe
     if (prev_block->size > size) {
         return ptr;
